@@ -201,7 +201,7 @@ public class RecyclerViewCardAdapter extends RecyclerView.Adapter<RecyclerViewCa
                             ((FileFragment) fragment).refreshList();
                             break;
                         case SEARCH_TYPE:
-                            ((SearchFragment) fragment).presenter.deleteNotebean(noteBean);
+                            ((SearchFragment) fragment).deleteNotebean(noteBean);
                             ((SearchFragment) fragment).refreshList();
                             break;
                     }

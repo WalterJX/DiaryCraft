@@ -17,7 +17,6 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.next.diarycraft.Bean.NoteBean;
-import com.next.diarycraft.Presenter.Presenter_picwall;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -61,11 +60,9 @@ public class MyScrollView extends ScrollView implements View.OnTouchListener {
     //记录所有界面上的图片，用以可以随时控制对图片的释放。
     private List<ImageView> imageViewList = new ArrayList<ImageView>();
 
-    private Presenter_picwall presenter_picwall;
     private SquareFragment squareFragment;
 
-    public void setPresenter(Presenter_picwall pp, SquareFragment ss){
-        this.presenter_picwall = pp;
+    public void setPresenter(SquareFragment ss){
         this.squareFragment = ss;
     }
     //在Handler中进行图片可见性检查的判断，以及加载更多图片的操作。
@@ -132,15 +129,15 @@ public class MyScrollView extends ScrollView implements View.OnTouchListener {
         if (hasSDCard()) {
             int startIndex = page * PAGE_SIZE;
             int endIndex = page * PAGE_SIZE + PAGE_SIZE;
-            if (startIndex < presenter_picwall.ImagePaths.length) {
+            if (startIndex < squareFragment.ImagePaths.length) {
 //                Toast.makeText(getContext(), "Loading...", Toast.LENGTH_SHORT).show();
-                if (endIndex > presenter_picwall.ImagePaths.length) {
-                    endIndex = presenter_picwall.ImagePaths.length;
+                if (endIndex > squareFragment.ImagePaths.length) {
+                    endIndex = squareFragment.ImagePaths.length;
                 }
                 for (int i = startIndex; i < endIndex; i++) {
                     LoadImageTask task = new LoadImageTask();
                     taskCollection.add(task);
-                    //task.execute(presenter_picwall.ImagePaths[i]);
+                    //task.execute(squareFragment.ImagePaths[i]);
                     task.execute(i);
                 }
                 page++;
@@ -164,7 +161,7 @@ public class MyScrollView extends ScrollView implements View.OnTouchListener {
                 //String imageUrl = (String) imageView.getTag(R.string.image_url);
                 //NoteBean noteBean = (NoteBean) imageView.getTag(R.string.image_url);
                 int pos = (Integer) imageView.getTag(R.string.image_url);
-                Bitmap bitmap = imageLoader.getBitmapFromMemoryCache(presenter_picwall.list.get(pos).getPhotopath());
+                Bitmap bitmap = imageLoader.getBitmapFromMemoryCache(squareFragment.list.get(pos).getPhotopath());
                 if (bitmap != null) {
                     imageView.setImageBitmap(bitmap);
                 } else {
@@ -206,7 +203,7 @@ public class MyScrollView extends ScrollView implements View.OnTouchListener {
         @Override
         protected Bitmap doInBackground(Integer... params) {
             mItemPosition = params[0];
-            noteBean = presenter_picwall.list.get(mItemPosition);
+            noteBean = squareFragment.list.get(mItemPosition);
             Bitmap imageBitmap = imageLoader
                     .getBitmapFromMemoryCache(noteBean.getSmallPicPath());
             if (imageBitmap == null) {
