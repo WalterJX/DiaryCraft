@@ -20,7 +20,7 @@ import android.widget.RelativeLayout;
 import com.next.diarycraft.Adapter.RecyclerViewCardAdapter;
 import com.next.diarycraft.Bean.Means;
 import com.next.diarycraft.Bean.NoteBean;
-import com.next.diarycraft.Presenter.Prestener_list;
+import com.next.diarycraft.Model.NoteInfoModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +31,12 @@ public class FileFragment extends Fragment {
     private static final int ACTIVITY_NEWFILE = 1000;
     private Toolbar toolbar;
     private AppCompatActivity myActivity;
-    public Prestener_list presenter;
     private RecyclerView recyclerView;
     private RelativeLayout relativeLayout;
 
     public final static int PEOPLE_CLASSIFY_ACTIVITY=3000;
+
+    private NoteInfoModel noteInfoModelImp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class FileFragment extends Fragment {
         toolbar = (Toolbar) view.findViewById (R.id.toolbar_files);
         relativeLayout=(RelativeLayout)view.findViewById(R.id.list_empty);
         recyclerView=(RecyclerView)view.findViewById(R.id.recycler_list);
-        presenter=new Prestener_list(this);
+        noteInfoModelImp=new NoteInfoModel(this.getListActivityConent());
 
         //以下代码原本在oncreated函数中，但问题仍未解决
         myActivity = (AppCompatActivity) getActivity();
@@ -81,7 +82,8 @@ public class FileFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
         //通过中间类，读取数据库信息并显示
-        presenter.readNotefromDatatoList();//从数据库读取信息并显示//read info from database
+        //presenter.readNotefromDatatoList();//从数据库读取信息并显示//read info from database
+        this.readAllNotefromData(noteInfoModelImp.QueryAllNotefromData());
     }
 
     //跳转到编辑（新建）活动// jump out to edit page
@@ -126,7 +128,8 @@ public class FileFragment extends Fragment {
 
     //刷新从数据库读取的内容//refresh
     public void refreshList(){//更新列表，在新建文件后使用
-        presenter.readNotefromDatatoList();
+        //presenter.readNotefromDatatoList();
+        this.readAllNotefromData(noteInfoModelImp.QueryAllNotefromData());
     }
 
     //根据其他activity返回的结果进行处理
@@ -147,4 +150,7 @@ public class FileFragment extends Fragment {
         startActivityForResult(intent,PEOPLE_CLASSIFY_ACTIVITY);
     }
 
+    public void deleteNotebean(NoteBean noteBean) {
+        noteInfoModelImp.DeleteNotefromData(noteBean);
+    }
 }

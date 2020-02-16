@@ -32,7 +32,7 @@ import com.next.diarycraft.Bean.Means;
 import com.next.diarycraft.Bean.NoteBean;
 
 import com.next.diarycraft.Bean.Noteinfo;
-import com.next.diarycraft.Presenter.Prestener_edit;
+import com.next.diarycraft.Model.NoteInfoModel;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.yuyh.library.imgsel.ISNav;
 import com.yuyh.library.imgsel.common.ImageLoader;
@@ -51,7 +51,6 @@ import java.util.UUID;
 import me.gujun.android.taggroup.TagGroup;
 
 public class EditActivity extends AppCompatActivity implements View.OnClickListener{
-    private Prestener_edit prester_edit;//中间类，连接这个Activity和数据库
     private FabOptions fabOptions;//底下的省略号按钮
     private Toolbar toolbar_add;//工具栏
     private TagGroup tagGroup_people;//用于显示已添加的人物
@@ -73,19 +72,17 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
 
     private final int ACTIVITY_LOCATE = 2000;
 
-    @TargetApi(Build.VERSION_CODES.M)
+    private NoteInfoModel noteInfoModel;
 
-    //实现中间类
-    private void initprestener(){
-        prester_edit=new Prestener_edit(this);
-    }
+    @TargetApi(Build.VERSION_CODES.M)
 
     private final int CHANGE_TYPE=10;
 
     protected void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_layout);
-        initprestener();//实现代理接口//interface
+        //initprestener();//实现代理接口//interface
+        this.noteInfoModel=new NoteInfoModel(this.getbasecontext());
         initViewAndData();//一系列的初始化//Initialization
         Bundle bundle = getIntent().getBundleExtra("data");//获取传来的数据，只有用户选择“编辑”时会传来数据，否则bundle为null//get data
         if(bundle!=null) {
@@ -301,9 +298,18 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
             for(int i=0;i<tags_label.size();i++)
                 label_save = label_save+tags_label.get(i)+";";//用分号隔开每个标签
             noteBean.setLabels(label_save);
-            prester_edit.saveNoteinfotoDatabase(noteBean);//通过中间类将数据保存
+            //prester_edit.saveNoteinfotoDatabase(noteBean);//通过中间类将数据保存
+            saveToDataBase(noteBean);
             setResult(RESULT_OK);
             finish();
+        }
+    }
+
+    private void saveToDataBase(NoteBean noteBean){
+        if (noteBean.getId()!=null){
+            noteInfoModel.ChangeNotetoData(noteBean);
+        }else {
+            noteInfoModel.InsertNotetoData(noteBean);
         }
     }
 

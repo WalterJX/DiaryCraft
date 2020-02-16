@@ -33,7 +33,7 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.next.diarycraft.Bean.Means;
 import com.next.diarycraft.Bean.NoteBean;
-import com.next.diarycraft.Presenter.Presenter_map;
+import com.next.diarycraft.Model.NoteInfoModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +43,11 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions // 标记，表明这个Fragment需要申请定位权限
 public class MapFragment extends Fragment {
-    private Presenter_map presenter_map;
     private Toolbar toolbar;
     private MapView mMapView = null;
     private BaiduMap mBaiduMap = null;
     private LocationClient mLocationClient=null;//初始化LocationClient定位类
+    private NoteInfoModel noteInfoModel;
 
     //防止每次定位都重新设置中心点和marker
     private boolean FirstTimeLoc = true;
@@ -84,7 +84,7 @@ public class MapFragment extends Fragment {
 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
-        presenter_map = new Presenter_map(this);
+        noteInfoModel=new NoteInfoModel(this.getListActivityConent());
         initToolBar();//初始化toolbar
         initMap(); //初始化地图
         initLocationService(); //定位服务的初始化，包含gps监听
@@ -295,7 +295,7 @@ public class MapFragment extends Fragment {
 
     //从数据库中读取所有的定位信息并显示
     public void showPoints(){
-        loc_noteBean_list = presenter_map.getLocPoints();
+        loc_noteBean_list = getLocPoints();
         markerlist = new ArrayList<>();
         for(int i=0;i<loc_noteBean_list.size();i++){
             NoteBean bb = loc_noteBean_list.get(i);
@@ -334,5 +334,9 @@ public class MapFragment extends Fragment {
         bundle.putSerializable("noteinfo", Means.changefromNotebean(noteBean));
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    public List<NoteBean> getLocPoints(){
+        return noteInfoModel.getLocationPoints();
     }
 }
