@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.next.diarycraft.Adapter.RecyclerViewCardAdapter;
 import com.next.diarycraft.Bean.NoteBean;
-import com.next.diarycraft.Presenter.Presenter_search;
+import com.next.diarycraft.Model.NoteInfoModel;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import static android.app.Activity.RESULT_OK;
 public class SearchFragment extends Fragment {
     private Toolbar toolbar;
     private AppCompatActivity myActivity;
-    public Presenter_search presenter;
+    private NoteInfoModel noteInfoModel;
     private Button searchButton;
     private MaterialEditText searchInfo;
     private List<NoteBean> resultList;
@@ -58,7 +58,7 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        presenter = new Presenter_search(this);//初始化presenter中间类 Initialization
+        this.noteInfoModel = new NoteInfoModel(this.getActivity());
 
         searchButton.setOnClickListener(new View.OnClickListener() {//对“搜索”按钮的监听
             @Override
@@ -76,7 +76,8 @@ public class SearchFragment extends Fragment {
     }
     //刷新显示列表 show lists
     public void refreshList(){
-        resultList = presenter.searchStringInDatabase(searchInfo.getText().toString());//搜索得到的数据 get searched data
+        //resultList = presenter.searchStringInDatabase(searchInfo.getText().toString());//搜索得到的数据 get searched data
+        resultList = noteInfoModel.searchStringInBase(searchInfo.getText().toString());
         //将结果显示出来 show data
         RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(getActivity().getApplicationContext(),LinearLayoutManager.VERTICAL,false);
         RecyclerViewCardAdapter recyclerViewCardAdapter=new RecyclerViewCardAdapter((ArrayList<NoteBean>) resultList,getActivity(),SearchFragment.this, RecyclerViewCardAdapter.SEARCH_TYPE);
@@ -95,5 +96,9 @@ public class SearchFragment extends Fragment {
                 searchInfo.setText("");//清空输入区域 make textfield empty
             }
         }
+    }
+
+    public void deleteNotebean(NoteBean noteBean) {
+        noteInfoModel.DeleteNotefromData(noteBean);
     }
 }

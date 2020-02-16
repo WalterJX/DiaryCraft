@@ -1,5 +1,4 @@
 package com.next.diarycraft;
-
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
@@ -7,19 +6,14 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
-
+import java.util.ArrayList;
 import java.util.List;
-
 import me.gujun.android.taggroup.TagGroup;
-
 import com.next.diarycraft.Bean.Means;
 import com.next.diarycraft.Bean.Noteinfo;
-import com.next.diarycraft.Presenter.Prestener_noteinfo;
 
 public class NoteinfoActivity extends SwipeActivity{
-    Prestener_noteinfo prestenerImpNoteinfo;
     private TagGroup tagGroup_people;
     private TagGroup tagGroup_label;
     private TextView textView_noteinfo;
@@ -32,7 +26,6 @@ public class NoteinfoActivity extends SwipeActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noteinfo);
-        prestenerImpNoteinfo=new Prestener_noteinfo(this);
         initView();
         getintentExtra();
     }
@@ -46,7 +39,8 @@ public class NoteinfoActivity extends SwipeActivity{
         Intent mintent=getIntent();
         Bundle bundle=mintent.getExtras();
         Noteinfo noteinfo= (Noteinfo) bundle.getSerializable("noteinfo");
-        prestenerImpNoteinfo.readDatatoNoteinfo(noteinfo);
+        //prestenerImpNoteinfo.readDatatoNoteinfo(noteinfo);
+        readDatatoNoteinfo(noteinfo);
     }
     private void initToolbarSeting(){//toolbard的设置 setup toolbar
         toolbar=(Toolbar)this.findViewById(R.id.toolbar_noteinfo);
@@ -100,5 +94,32 @@ public class NoteinfoActivity extends SwipeActivity{
     public void readDate(int dateInt){
         String dateShow = (dateInt+"").substring(0,4)+"-"+(dateInt+"").substring(4,6)+"-"+(dateInt+"").substring(6,8);
         date.setText(dateShow);
+    }
+
+    public void readDatatoNoteinfo(Noteinfo noteinfo) {
+        this.readNoteinfotoNotetext(noteinfo.getNoteinfo());//show the text message
+        this.readPhotopathtoNoteImageview(noteinfo.getPhotopath(),noteinfo.getNotetype());//show the picture
+        List<String> tags=new ArrayList<String>();
+        List<String> tags_people=new ArrayList<>();
+        List<String> tags_label=new ArrayList<>();
+        String people_tmp;
+        String label_tmp;
+
+        //将人物的String用分号隔开存到list中
+        //save people tag in string, separated by semicolons and save them in list.
+        people_tmp = noteinfo.getPeople();
+        String[] p_tmp = people_tmp.split(";");
+        for(int i=0;i<p_tmp.length;i++)
+            tags_people.add(p_tmp[i]);
+        //label同上
+        //label saving, same as above
+        label_tmp = noteinfo.getLabels();
+        String[] l_tmp = label_tmp.split(";");
+        for(int i=0;i<l_tmp.length;i++)
+            tags_label.add(l_tmp[i]);
+
+        this.readPeopleTaggroup(tags_people);//将人物的tagGroup显示 // show people taggroup
+        this.readLabelTaggroup(tags_label);//将标签的tagGroup显示 // show tag taggroup
+        this.readDate(noteinfo.getDate());//日期显示 // show date
     }
 }

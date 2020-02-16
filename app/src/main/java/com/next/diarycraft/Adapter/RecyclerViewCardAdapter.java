@@ -197,11 +197,11 @@ public class RecyclerViewCardAdapter extends RecyclerView.Adapter<RecyclerViewCa
                 if(contextType==FRAGMENT_TYPE) {
                     switch (fragmentType) {
                         case FILE_TYPE:
-                            ((FileFragment) fragment).presenter.deleteNotebean(noteBean);
+                            ((FileFragment) fragment).deleteNotebean(noteBean);
                             ((FileFragment) fragment).refreshList();
                             break;
                         case SEARCH_TYPE:
-                            ((SearchFragment) fragment).presenter.deleteNotebean(noteBean);
+                            ((SearchFragment) fragment).deleteNotebean(noteBean);
                             ((SearchFragment) fragment).refreshList();
                             break;
                     }
