@@ -3,6 +3,7 @@ package com.next.diarycraft;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -64,6 +65,12 @@ public class ImageDetailsActivity extends AppCompatActivity implements ViewPager
             if (bitmap == null) {
                 bitmap = BitmapFactory.decodeResource(getResources(),
                         R.drawable.empty_photo);
+            }
+            int degrees = EditActivity.readPictureDegree(imagePath);
+            if (degrees != 0) {
+                Matrix m = new Matrix();
+                m.setRotate(degrees, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
             }
             View view = LayoutInflater.from(ImageDetailsActivity.this).inflate(
                     R.layout.zoom_image_layout, null);
