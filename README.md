@@ -3,7 +3,8 @@ This is my graduation project in undergraduate study. The name of the software w
 Though I already graduated, I am still updating this app in order to make it better. README file is also updating.
 
 ## Update Log
-2/15/2020, code structure optimization. All "Presenter" classes were deleted.
+2/15/2020, code structure optimization. All "Presenter" classes were deleted.  
+2/27/2020, bug fixed: Fix the bug that sometimes pictures were showed in a wrong angle in edit, details or picture wall.  
 
 ## Introduction
 This DiaryCraft system has the following functions:  
